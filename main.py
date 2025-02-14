@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib
 matplotlib.use('TkAgg')  # Set backend for Matplotlib to work with Tkinter
 import matplotlib.pyplot as plt
+from scipy.interpolate import interp1d
 from scipy.optimize import bisect, newton  # Import numerical root-finding methods
 import tkinter as tk
 from tkinter import ttk, simpledialog, messagebox  # Import Tkinter components for GUI
@@ -130,6 +131,40 @@ class ComputationalMathApp:
             self.result_text.insert(tk.END, f'Jacobi Method Solution: {solution}\n')
         except Exception as e:
             self.result_text.insert(tk.END, f'Error in Jacobi Method: {e}\n')
+
+    def task4(self):
+        matrix = np.array([list(map(float, row.split(','))) for row in self.matrix.split(';')])
+        inverse = np.linalg.inv(matrix)
+        self.result_text.insert(tk.END, f'Matrix Inversion Result:\n{inverse}\n')
+
+    def task5(self):
+        points = np.array([list(map(float, pair.split(','))) for pair in self.data_points.split(';')])
+        x, y = points[:, 0], points[:, 1]
+        coef = np.polyfit(x, y, 1)
+        self.result_text.insert(tk.END, f'Linear Fit: y = {coef[0]:.2f}x + {coef[1]:.2f}\n')
+
+    def task6(self):
+        x = list(map(float, self.x_values.split(',')))
+        y = list(map(float, self.y_values.split(',')))
+        interpolation = interp1d(x, y, kind='linear')
+        estimate = interpolation(1.5)
+        self.result_text.insert(tk.END, f'Interpolated Value at x=1.5: {estimate}\n')
+
+    def task7(self):
+        x = np.array(list(map(float, self.x_values.split(','))))
+        y = np.array(list(map(float, self.y_values.split(','))))
+        derivative = (y[2] - y[1]) / (x[2] - x[1])
+        self.result_text.insert(tk.END, f'Estimated Derivative at x=1: {derivative}\n')
+
+    def task8(self):
+        f = lambda x: x ** 2 + x
+        a, b, n = 0, 1, int(self.sub_intervals)
+        h = (b - a) / n
+        x = np.linspace(a, b, n + 1)
+        y = f(x)
+        integral = (h / 2) * (y[0] + 2 * sum(y[1:n]) + y[n])
+        exact = (1 ** 3 / 3 + 1 ** 2 / 2) - (0 ** 3 / 3 + 0 ** 2 / 2)
+        self.result_text.insert(tk.END, f'Trapezoidal Approximation: {integral}\nExact Integral: {exact}\n')
 
     def plot_graph(self):
         """Handle graph plotting for selected computational tasks."""
